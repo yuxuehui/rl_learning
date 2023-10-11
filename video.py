@@ -17,9 +17,7 @@ class VideoRecorder(object):
 
     def record(self, env):
         if self.enabled:
-            frame = env.render(mode='rgb_array',
-                               height=self.height,
-                               width=self.width)
+            frame = env.render(mode='rgb_array')
             self.frames.append(frame)
 
     def save(self, file_name):
