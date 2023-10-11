@@ -20,7 +20,8 @@ import numpy
 import time
 # import gym
 
-from gymnasium.wrappers import RecordVideo
+
+from video import VideoRecorder
 
 def train(args):
     env_id = args.domain_name
@@ -53,46 +54,27 @@ def train(args):
                             tensorboard_log=log_dir)
 
     model.learn(total_timesteps=args.time_step,progress_bar=True,tb_log_name=f"SAC-mass{args.test_mass}-friction{args.test_lateral_friction}")
-    model.save(f'SAC-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}')
+    model.save(f'checkpoints/SAC-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}')
     
     train_env.close()
-
 
 def test(args):
-    # env for train
-    env1 = make_env(args.domain_name)
-    env2 = make_env(args.domain_name, 1.0, 0.001,2.0)
-    env3 = make_env(args.domain_name, 1.0, 0.001,3.0)
-    env4 = make_env(args.domain_name, 1.0, 0.001,4.0)
-    # env for test
-    env5 = make_env(args.domain_name, 1.0, 0.001,10)
 
-    train_env = DummyVecEnv([env1,env2,env3,env4])
-    test_env = DummyVecEnv([env5,env5,env5,env5])
-
-    model = SACEnvSwitchWrapper.load('SAC-PandaPush-v3',env=train_env)
-    # model.env = train_env
-    # train_mean_reward, train_std_reward = evaluate_policy(model, train_env, 100)
-    test_mean_reward, test_std_reward = evaluate_policy(model, test_env, 100)
-    
-    # print(f"Train Mean reward = {train_mean_reward:.2f} +/- {train_std_reward:.2f}")
-    print(f"Test Mean reward = {test_mean_reward:.2f} +/- {test_std_reward:.2f}")
-
-    train_env.close()
-    test_env.close()
-
-def test2(args):
     env = make_env(args.domain_name, args.test_lateral_friction, args.test_spinning_friction, args.test_mass)
     test_env = DummyVecEnv([env])
+
+    recoder = VideoRecorder('./video')
+    
     #test_env = RecordVideo(test_env, './video')
     observations = test_env.reset()
     states = None
     episode_starts = np.ones((test_env.num_envs,), dtype=bool)
     
-    model = SACEnvSwitchWrapper.load('SAC-mass1.0-friction20.0',env=test_env)
+    model = SACEnvSwitchWrapper.load(args.test_model_path,env=test_env)
     
     while True:
-        test_env.render(mode='human')
+        recoder.record(test_env)
+        # test_env.render(mode='human')
         
         actions, states = model.predict(
             observations,  # type: ignore[arg-type]
@@ -102,24 +84,10 @@ def test2(args):
         )
         observations, rewards, dones, infos = test_env.step(actions)
         print(infos)
-        time.sleep(0.1)
         if dones:
             break
-    test_env.close()
-        
     
-    
-
-def retrain(args):
-    # env for test
-    env5 = make_env(args.domain_name, 1.0, 0.001,50)
-    test_env = DummyVecEnv([env5,env5,env5,env5])
-
-    model = SACEnvSwitchWrapper.load('SAC-PandaPush-v3',env=test_env)
-    model.eval_env = True
-
-    model.learn(total_timesteps=args.time_step,progress_bar=True)
-
+    recoder.save(f'SAC-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}.mp4')
     test_env.close()
 
 
@@ -132,7 +100,12 @@ if __name__ == "__main__":
     parser.add_argument('--time_step', default=800000, type=int)
     parser.add_argument('--test_spinning_friction', default=0.001, type=float)
     parser.add_argument('--test_lateral_friction', default=1.0, type=float)
+    
+    parser.add_argument('--test_model_path', default='SAC-mass1.0-friction20.0', type=str)
+    parser.add_argument('--test_mode',action="store_true", default=False)
     args = parser.parse_args()
-
-    train(args)
-    #test2(args)
+    
+    if not args.test_mode:
+        train(args)
+    else:
+        test(args)
