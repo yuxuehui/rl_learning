@@ -2,4 +2,7 @@
 *.out
 *.png
 
+SAC-*
+TQC-*
+
 __pycache__
