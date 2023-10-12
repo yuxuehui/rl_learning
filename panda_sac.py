@@ -97,7 +97,7 @@ if __name__ == "__main__":
     parser.add_argument('--random_int', default=[1, 5], nargs='+', type=int)
     parser.add_argument('--random_float', default=[0.001, 0.01], nargs='+', type=float)
     parser.add_argument('--test_mass', default=1.0, type=int)
-    parser.add_argument('--time_step', default=800000, type=int)
+    parser.add_argument('--time_step', default=2000000, type=int)
     parser.add_argument('--test_spinning_friction', default=0.001, type=float)
     parser.add_argument('--test_lateral_friction', default=1.0, type=float)
     
