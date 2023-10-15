@@ -90,6 +90,33 @@ def test(args):
     recoder.save(f'SAC-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}.mp4')
     test_env.close()
 
+def test_success_rate(args):
+
+    env = make_env(args.domain_name, args.test_lateral_friction, args.test_spinning_friction, args.test_mass)
+    test_env = DummyVecEnv([env])
+    model = SACEnvSwitchWrapper.load(args.test_model_path,env=test_env)
+    acc_num = 0
+    for i in range(100):
+        #test_env = RecordVideo(test_env, './video')
+        observations = test_env.reset()
+        states = None
+        episode_starts = np.ones((test_env.num_envs,), dtype=bool)
+        while True:
+            # test_env.render(mode='human')
+            
+            actions, states = model.predict(
+                observations,  # type: ignore[arg-type]
+                state=states,
+                episode_start=episode_starts,
+                deterministic=True,
+            )
+            observations, rewards, dones, infos = test_env.step(actions)
+            if dones:
+                if infos[0]['is_success']: acc_num += 1
+                break
+    print('acc_rate:',acc_num / 100)
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -103,9 +130,12 @@ if __name__ == "__main__":
     
     parser.add_argument('--test_model_path', default='SAC-mass1.0-friction20.0', type=str)
     parser.add_argument('--test_mode',action="store_true", default=False)
+    parser.add_argument('--test_rate_mode',action="store_true", default=False)
     args = parser.parse_args()
     
-    if not args.test_mode:
+    if not args.test_mode and not args.test_rate_mode:
         train(args)
-    else:
+    elif args.test_mode:
         test(args)
+    else:
+        test_success_rate(args)
