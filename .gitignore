@@ -8,3 +8,4 @@ TQC-*
 *tensorboard
 
 __pycache__
+*.mp4
