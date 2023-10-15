@@ -1,7 +1,6 @@
 from stable_baselines3 import HerReplayBuffer, SAC
 from sb3_contrib import ARS, QRDQN, TQC, TRPO, RecurrentPPO
 import gymnasium
-import panda_gym
 import numpy as np
 from typing import Any, ClassVar, Dict, Iterable, List, Optional, Tuple, Type, TypeVar, Union
 from stable_baselines3.common.noise import ActionNoise, VectorizedActionNoise
