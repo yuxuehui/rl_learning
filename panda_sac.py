@@ -87,7 +87,7 @@ def test(args):
         if dones:
             break
     
-    recoder.save(f'SAC-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}.mp4')
+    recoder.save(f'train-{args.test_model_path.split("/")[-1]}-test-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}.mp4')
     test_env.close()
 
 def test_success_rate(args):

@@ -101,13 +101,16 @@ if __name__ == "__main__":
     #                         # '/scratch/yxue/rl_learning/output/51439.out'
     # ]
     # plot_function_multi(x_list, y_list, label_name = ["PandaPush", "PandaPushDense", "PandaPickAndPlace"], save_dir ="SAC_EE_Big_Mass_10000_diff_tasks")
-    name = 'friction_0'
+    name = 'friction_60'
     out_file_name_train = [
                             f'PandaPickAndPlaceDense_{name}.out',
                             f'PandaPickAndPlace_{name}.out',
                             f'PandaPush_{name}.out',
                             f'PandaPushDense_{name}.out'
     ]
+    #out_file_name_train = [
+    #                        f'logs1011/PandaPickAndPlace_{name}.out'
+    #]
 
     x_list = []
     y_list = []
@@ -121,4 +124,5 @@ if __name__ == "__main__":
             y_list.append(y)
 
     plot_function_multi(x_list, y_list, label_name = ["PandaPickAndPlaceDense", "PandaPickAndPlace", "PandaPush","PandaPushDense"], save_dir =name)
+    #plot_function_multi(x_list, y_list, label_name = ["PandaPickAndPlace"], save_dir =name)
 
