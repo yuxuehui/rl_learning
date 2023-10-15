@@ -13,14 +13,14 @@ from stable_baselines3.common.vec_env import (
 from stable_baselines3.common.evaluation import evaluate_policy
 
 from model import SACEnvSwitchWrapper
-from utils import make_env
+from utils import make_env,init_env
 import argparse
 
 import numpy
 import time
 # import gym
 
-
+init_env()
 from video import VideoRecorder
 
 def train(args):
@@ -28,7 +28,8 @@ def train(args):
     # log_dir = './panda_push_v3_tensorboard/'
     log_dir = './' + args.domain_name + '_tensorboard/'
 
-    env = make_env(env_id, args.test_lateral_friction, args.test_spinning_friction, args.test_mass)
+    env = make_env(env_id, args.test_lateral_friction, args.test_spinning_friction,
+                    args.test_mass, args.test_gravity, args.test_object_height)
     train_env = DummyVecEnv([env,env,env,env])
     
     # SAC train model
@@ -53,14 +54,16 @@ def train(args):
                             verbose=1,
                             tensorboard_log=log_dir)
 
-    model.learn(total_timesteps=args.time_step,progress_bar=True,tb_log_name=f"SAC-mass{args.test_mass}-friction{args.test_lateral_friction}")
-    model.save(f'checkpoints/SAC-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}')
+    model.learn(total_timesteps=args.time_step,progress_bar=True,
+                tb_log_name=f"SAC-mass{args.test_mass}-friction{args.test_lateral_friction}-{args.test_gravity}-{args.test_object_height}")
+    model.save(f'checkpoints/SAC-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}')
     
     train_env.close()
 
 def test(args):
 
-    env = make_env(args.domain_name, args.test_lateral_friction, args.test_spinning_friction, args.test_mass)
+    env = make_env(args.domain_name, args.test_lateral_friction, args.test_spinning_friction,
+                    args.test_mass, args.test_gravity, args.test_object_height)
     test_env = DummyVecEnv([env])
 
     recoder = VideoRecorder('./video')
@@ -87,12 +90,12 @@ def test(args):
         if dones:
             break
     
-    recoder.save(f'train-{args.test_model_path.split("/")[-1]}-test-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}.mp4')
+    recoder.save(f'train-{args.test_model_path.split("/")[-1]}-test-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}.mp4')
     test_env.close()
 
 def test_success_rate(args):
-
-    env = make_env(args.domain_name, args.test_lateral_friction, args.test_spinning_friction, args.test_mass)
+    env = make_env(args.domain_name, args.test_lateral_friction, args.test_spinning_friction,
+                    args.test_mass, args.test_gravity, args.test_object_height)
     test_env = DummyVecEnv([env])
     model = SACEnvSwitchWrapper.load(args.test_model_path,env=test_env)
     acc_num = 0
@@ -114,6 +117,7 @@ def test_success_rate(args):
             if dones:
                 if infos[0]['is_success']: acc_num += 1
                 break
+
     print('acc_rate:',acc_num / 100)
 
 
@@ -127,7 +131,9 @@ if __name__ == "__main__":
     parser.add_argument('--time_step', default=2000000, type=int)
     parser.add_argument('--test_spinning_friction', default=0.001, type=float)
     parser.add_argument('--test_lateral_friction', default=1.0, type=float)
-    
+    parser.add_argument('--test_gravity', default=-9.81, type=float)
+    parser.add_argument('--test_object_height', default=1.0, type=float)
+
     parser.add_argument('--test_model_path', default='SAC-mass1.0-friction20.0', type=str)
     parser.add_argument('--test_mode',action="store_true", default=False)
     parser.add_argument('--test_rate_mode',action="store_true", default=False)
