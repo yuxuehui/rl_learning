@@ -59,7 +59,7 @@ def train(args):
     
     train_env.close()
 
-def test(args):
+def generate_video(args):
 
     env = make_env(args.domain_name, args.test_lateral_friction, args.test_spinning_friction,
                     args.test_mass, args.test_gravity, args.test_object_height)
@@ -92,12 +92,13 @@ def test(args):
     recoder.save(f'train-{args.test_model_path.split("/")[-1]}-test-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}.mp4')
     test_env.close()
 
-def test_success_rate(args):
+def test_success_rate_and_done_type(args):
     env = make_env(args.domain_name, args.test_lateral_friction, args.test_spinning_friction,
                     args.test_mass, args.test_gravity, args.test_object_height)
     test_env = DummyVecEnv([env])
     model = SACEnvSwitchWrapper.load(args.test_model_path,env=test_env)
     acc_num = 0
+    pick_and_place_num = 0
     for i in range(100):
         #test_env = RecordVideo(test_env, './video')
         observations = test_env.reset()
@@ -114,11 +115,14 @@ def test_success_rate(args):
             )
             observations, rewards, dones, infos = test_env.step(actions)
             if dones:
-                if infos[0]['is_success']: acc_num += 1
+                if infos[0]['is_success']:
+                    acc_num += 1
+                if infos[0]['terminal_observation']['achieved_goal'][2] > 0.021 * args.test_object_height:
+                    pick_and_place_num += 1
                 break
 
     print('acc_rate:',acc_num / 100)
-
+    print('pick_and_place_rate:', pick_and_place_num / 100)
 
 
 if __name__ == "__main__":
@@ -141,6 +145,6 @@ if __name__ == "__main__":
     if not args.test_mode and not args.test_rate_mode:
         train(args)
     elif args.test_mode:
-        test(args)
+        generate_video(args)
     else:
-        test_success_rate(args)
+        test_success_rate_and_done_type(args)
