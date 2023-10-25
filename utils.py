@@ -71,7 +71,7 @@ def get_pick_and_place_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0
         return env
     return _init
 
-def make_env(name,lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1, reward_type = '',control_type=''):
+def make_env(name,lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1.0, reward_type = '',control_type=''):
     if name == "PandaPush-v3":
         print("This is PandaPush-v3 Env, Welcome!")
         return get_push_env(lateral_friction, spinning_friction, mass, gravity,object_height,reward_type,control_type )

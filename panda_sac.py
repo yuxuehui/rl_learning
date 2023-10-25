@@ -18,6 +18,7 @@ import argparse
 import numpy
 import time
 # import gym
+import datetime
 
 init_env()
 from video import VideoRecorder
@@ -89,7 +90,8 @@ def generate_video(args):
         if dones:
             break
     
-    recoder.save(f'train-{args.test_model_path.split("/")[-1]}-test-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}.mp4')
+    cur_time = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S-%f")
+    recoder.save(f'train-{args.test_model_path.split("/")[-1]}-test-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}-{cur_time}.mp4')
     test_env.close()
 
 def test_success_rate_and_done_type(args):
@@ -104,6 +106,7 @@ def test_success_rate_and_done_type(args):
         observations = test_env.reset()
         states = None
         episode_starts = np.ones((test_env.num_envs,), dtype=bool)
+        visit_flag = True
         while True:
             # test_env.render(mode='human')
             
@@ -114,16 +117,26 @@ def test_success_rate_and_done_type(args):
                 deterministic=True,
             )
             observations, rewards, dones, infos = test_env.step(actions)
+            object = env.envs[0].unwrapped.sim._bodies_idx['object']
+            table = env.envs[0].unwrapped.sim._bodies_idx['table']
+            contact_points = env.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA=table, bodyB=object, linkIndexA=-1,linkIndexB = -1)
+            
+            if len(contact_points) == 0 and visit_flag:
+                pick_and_place_num += 1
+                visit_flag = False
+
             if dones:
                 if infos[0]['is_success']:
                     acc_num += 1
-                if infos[0]['terminal_observation']['achieved_goal'][2] > 0.021 * args.test_object_height:
-                    pick_and_place_num += 1
+                # if infos[0]['terminal_observation']['achieved_goal'][2] > 0.021 * args.test_object_height:
+                #     pick_and_place_num += 1
                 break
+    # 生成视频
+    for _ in range(10):
+        generate_video(args)
 
     print('acc_rate:',acc_num / 100)
     print('pick_and_place_rate:', pick_and_place_num / 100)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
