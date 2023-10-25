@@ -1,38 +1,32 @@
 
-
-# 计算 mass 的指标
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 20 --test_model_path checkpoints/SAC-PandaPush-v3-mass20-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 30 --test_model_path checkpoints/SAC-PandaPush-v3-mass30-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 40 --test_model_path checkpoints/SAC-PandaPush-v3-mass40-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
-
 # 计算其他对比指标
 echo "mass 1 - 20"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 20 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 20 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass1.0-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 echo "mass 1 - 30"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 30 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 30 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass1.0-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 echo "mass 1 - 40"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 40 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 40 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass1.0-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 
 echo "mass 20 - 1"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPush-v3-mass20-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass20-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 echo "mass 20 - 40"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 30 --test_model_path checkpoints/SAC-PandaPush-v3-mass20-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 30 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass20-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 echo "mass 20 - 60"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 40 --test_model_path checkpoints/SAC-PandaPush-v3-mass20-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 40 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass20-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 
 echo "mass 30 - 1"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPush-v3-mass30-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass30-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 echo "mass 30 - 20"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 20 --test_model_path checkpoints/SAC-PandaPush-v3-mass30-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 20 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass30-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 echo "mass 30 - 40"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 40 --test_model_path checkpoints/SAC-PandaPush-v3-mass30-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 40 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass30-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 
 echo "mass 40 - 1"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPush-v3-mass40-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass40-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 echo "mass 40 - 20"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 20 --test_model_path checkpoints/SAC-PandaPush-v3-mass40-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 20 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass40-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 echo "mass 40 - 30"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 30 --test_model_path checkpoints/SAC-PandaPush-v3-mass40-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 30 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass40-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 
 # 计算其他对比指标
 echo "friction 0 - 1"
@@ -193,3 +187,35 @@ python panda_sac.py --domain_name PandaPush-v3 --test_lateral_friction 1 --test_
 
 echo "height 2.0 friciton 60"
 python panda_sac.py --domain_name PandaPush-v3 --test_lateral_friction 1 --test_object_height 2.0 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction1.0-gravity9.81-object_height2.0 --test_rate_mode
+
+echo "friciton 0"
+python panda_sac.py --domain_name PandaPush-v3 --test_lateral_friction 0 --test_object_height 1.0 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction0.0-gravity9.81-object_height1.0 --test_rate_mode
+
+echo "friciton 1"
+python panda_sac.py --domain_name PandaPush-v3 --test_lateral_friction 1 --test_object_height 1.0 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+
+echo "friciton 2"
+python panda_sac.py --domain_name PandaPush-v3 --test_lateral_friction 2 --test_object_height 1.0 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction2.0-gravity9.81-object_height1.0 --test_rate_mode
+
+echo "friciton 5"
+python panda_sac.py --domain_name PandaPush-v3 --test_lateral_friction 5 --test_object_height 1.0 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction5.0-gravity9.81-object_height1.0 --test_rate_mode
+
+echo "friciton 10"
+python panda_sac.py --domain_name PandaPush-v3 --test_lateral_friction 10 --test_object_height 1.0 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction10.0-gravity9.81-object_height1.0 --test_rate_mode
+
+echo "friciton 20"
+python panda_sac.py --domain_name PandaPush-v3 --test_lateral_friction 20 --test_object_height 1.0 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction20.0-gravity9.81-object_height1.0 --test_rate_mode
+
+echo "friciton 40"
+python panda_sac.py --domain_name PandaPush-v3 --test_lateral_friction 40 --test_object_height 1.0 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction40.0-gravity9.81-object_height1.0 --test_rate_mode
+
+echo "friciton 60"
+python panda_sac.py --domain_name PandaPush-v3 --test_lateral_friction 60 --test_object_height 1.0 --test_model_path checkpoints/SAC-PandaPush-v3-mass1.0-friction60.0-gravity9.81-object_height1.0 --test_rate_mode
+
+# 计算 mass 的指标
+echo "mass 20"
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 20 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass20-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+echo "mass 30"
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 30 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass30-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+echo "mass 40"
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 40 --test_model_path checkpoints/SAC-PandaPushDense-v3-mass40-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
