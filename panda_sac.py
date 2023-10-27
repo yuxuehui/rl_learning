@@ -122,9 +122,9 @@ def test_success_rate_and_done_type(args):
                 deterministic=True,
             )
             observations, rewards, dones, infos = test_env.step(actions)
-            object = env.envs[0].unwrapped.sim._bodies_idx['object']
-            table = env.envs[0].unwrapped.sim._bodies_idx['table']
-            contact_points = env.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA=table, bodyB=object, linkIndexA=-1,linkIndexB = -1)
+            object = test_env.envs[0].unwrapped.sim._bodies_idx['object']
+            table = test_env.envs[0].unwrapped.sim._bodies_idx['table']
+            contact_points = test_env.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA=table, bodyB=object, linkIndexA=-1,linkIndexB = -1)
             _contact_nums.append(len(contact_points))
             if len(contact_points) == 0 and visit_flag:
                 pick_and_place_num += 1
