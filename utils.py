@@ -2,6 +2,7 @@
 from typing import Optional
 
 import numpy as np
+import csv
 
 import gymnasium
 
@@ -80,4 +81,13 @@ def make_env(name,lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=
         return get_pick_and_place_env(lateral_friction, spinning_friction, mass, gravity,object_height,reward_type,control_type )
     else:
         raise Exception("Unkown Environment in make_env")
-    
+
+
+def save_to_csv(data, out_file):
+
+    # 打开CSV文件进行写操作
+    with open(out_file, 'w', newline='',encoding='utf-8') as file:
+        writer = csv.writer(file)
+        for _data in data:
+            writer.writerow(_data)
+        
