@@ -1,28 +1,28 @@
 
 
-nohup python panda_sac.py --domain_name PandaPush-v3 --test_mass 20 > PandaPush_mass_20.out &
+nohup python panda_sac.py --domain_name PandaPush-v3 --test_mass 15 > PandaPush_mass_15.out &
 
-nohup python panda_sac.py --domain_name PandaPushDense-v3 --test_mass 20 > PandaPushDense_mass_20.out &
+nohup python panda_sac.py --domain_name PandaPushDense-v3 --test_mass 15 > PandaPushDense_mass_15.out &
 
-nohup python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 20 > PandaPickAndPlace_mass_20.out &
+nohup python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 15 > PandaPickAndPlace_mass_15.out &
 
-nohup python panda_sac.py --domain_name PandaPickAndPlaceDense-v3 --test_mass 20 > PandaPickAndPlaceDense_mass_20.out &
-
-
-nohup python panda_sac.py --domain_name PandaPush-v3 --test_mass 40 > PandaPush_mass_40.out &
-
-nohup python panda_sac.py --domain_name PandaPushDense-v3 --test_mass 40 > PandaPushDense_mass_40.out &
-
-nohup python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 40 > PandaPickAndPlace_mass_40.out &
-
-nohup python panda_sac.py --domain_name PandaPickAndPlaceDense-v3 --test_mass 40 > PandaPickAndPlaceDense_mass_40.out &
+nohup python panda_sac.py --domain_name PandaPickAndPlaceDense-v3 --test_mass 15 > PandaPickAndPlaceDense_mass_15.out &
 
 
-nohup python panda_sac.py --domain_name PandaPush-v3 --test_mass 30 > PandaPush_mass_30.out &
+nohup python panda_sac.py --domain_name PandaPush-v3 --test_mass 10 > PandaPush_mass_10.out &
 
-nohup python panda_sac.py --domain_name PandaPushDense-v3 --test_mass 30 > PandaPushDense_mass_30.out &
+nohup python panda_sac.py --domain_name PandaPushDense-v3 --test_mass 10 > PandaPushDense_mass_10.out &
 
-nohup python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 30 > PandaPickAndPlace_mass_30.out &
+nohup python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 10 > PandaPickAndPlace_mass_10.out &
 
-nohup python panda_sac.py --domain_name PandaPickAndPlaceDense-v3 --test_mass 30 > PandaPickAndPlaceDense_mass_30.out &
+nohup python panda_sac.py --domain_name PandaPickAndPlaceDense-v3 --test_mass 10 > PandaPickAndPlaceDense_mass_10.out &
+
+
+nohup python panda_sac.py --domain_name PandaPush-v3 --test_mass 5 > PandaPush_mass_5.out &
+
+nohup python panda_sac.py --domain_name PandaPushDense-v3 --test_mass 5 > PandaPushDense_mass_5.out &
+
+nohup python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 5 > PandaPickAndPlace_mass_5.out &
+
+nohup python panda_sac.py --domain_name PandaPickAndPlaceDense-v3 --test_mass 5 > PandaPickAndPlaceDense_mass_5.out &
 
