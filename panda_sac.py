@@ -145,7 +145,7 @@ def test_success_rate_and_done_type(args):
         generate_video(args)
     cur_time = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S-%f")
     csv_file_name = f'csv/train-{args.test_model_path.split("/")[-1]}-test-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}-{cur_time}.csv'
-    save_to_csv(_contact_nums, csv_file_name)
+    save_to_csv(contact_nums, csv_file_name)
     print('acc_rate:',acc_num / 100)
     print('pick_and_place_rate:', pick_and_place_num / 100)
 
