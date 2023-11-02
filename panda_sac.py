@@ -12,7 +12,7 @@ from stable_baselines3.common.vec_env import (
 from stable_baselines3.common.evaluation import evaluate_policy
 
 from model import SACEnvSwitchWrapper
-from utils import make_env,init_env,save_to_csv
+from utils import make_env,init_env,save_to_csv,get_state,states_to_result
 import argparse
 
 import numpy
@@ -29,7 +29,7 @@ def train(args):
     env_id = args.domain_name
     # log_dir = './panda_push_v3_tensorboard/'
     log_dir = './' + args.domain_name + '_tensorboard/'
-
+    
     env = make_env(env_id, args.test_lateral_friction, args.test_spinning_friction,
                     args.test_mass, args.test_gravity, args.test_object_height)
     train_env = DummyVecEnv([env,env,env,env])
@@ -76,9 +76,9 @@ def generate_video(args):
     episode_starts = np.ones((test_env.num_envs,), dtype=bool)
     
     model = SACEnvSwitchWrapper.load(args.test_model_path,env=test_env)
-    
+    recoder.record(test_env)
     while True:
-        recoder.record(test_env)
+        
         # test_env.render(mode='human')
         
         actions, states = model.predict(
@@ -88,6 +88,20 @@ def generate_video(args):
             deterministic=True,
         )
         observations, rewards, dones, infos = test_env.step(actions)
+        recoder.record(test_env)
+        object = test_env.envs[0].unwrapped.sim._bodies_idx['object']
+        table = test_env.envs[0].unwrapped.sim._bodies_idx['table']
+        robot = test_env.envs[0].unwrapped.sim._bodies_idx['panda']
+        contact_points1 = test_env.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA = robot,bodyB = object, linkIndexA = 9, linkIndexB = -1)
+        contact_points2 = test_env.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA = robot,bodyB = object, linkIndexA = 10, linkIndexB = -1)
+
+        contact_points = test_env.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA=table, bodyB=object, linkIndexA=-1,linkIndexB = -1)
+        print("object position: ", test_env.envs[0].unwrapped.sim.physics_client.getBasePositionAndOrientation(bodyUniqueId=object)[0])
+        print('contact num between table and object: ',len(contact_points))
+        print('contact distance between table and object: ',test_env.envs[0].unwrapped.robot.get_fingers_width())
+        print('contact num between table and fingers: ', int(len(contact_points1) > 0) + int(len(contact_points2) > 0))
+        # print(contact_points1)
+        # print(contact_points2)
         print(infos)
         if dones:
             break
@@ -101,18 +115,21 @@ def test_success_rate_and_done_type(args):
                     args.test_mass, args.test_gravity, args.test_object_height)
     test_env = DummyVecEnv([env])
     model = SACEnvSwitchWrapper.load(args.test_model_path,env=test_env)
-    acc_num = 0
-    pick_and_place_num = 0
 
-    contact_nums = []
+    all_count = 0
+    success_count = 0
+    pick_and_place_count = 0
+    roll_count = 0
+    push_count = 0
+    
+    eps_states = []
     for i in range(100):
         #test_env = RecordVideo(test_env, './video')
         observations = test_env.reset()
         states = None
         episode_starts = np.ones((test_env.num_envs,), dtype=bool)
-        visit_flag = True
-        _contact_nums =  []
-        while True:
+        _eps_states = []
+        for eps_i in range(50):
             # test_env.render(mode='human')
             
             actions, states = model.predict(
@@ -122,32 +139,45 @@ def test_success_rate_and_done_type(args):
                 deterministic=True,
             )
             observations, rewards, dones, infos = test_env.step(actions)
-            object = test_env.envs[0].unwrapped.sim._bodies_idx['object']
-            table = test_env.envs[0].unwrapped.sim._bodies_idx['table']
-            contact_points = test_env.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA=table, bodyB=object, linkIndexA=-1,linkIndexB = -1)
-            _contact_nums.append(len(contact_points))
-            if len(contact_points) == 0 and visit_flag:
-                pick_and_place_num += 1
-                visit_flag = False
 
-            if dones:
-                if infos[0]['is_success']:
-                    acc_num += 1
-                    _contact_nums.append('success')
-                else:
-                    _contact_nums.append('fail')
-                # if infos[0]['terminal_observation']['achieved_goal'][2] > 0.021 * args.test_object_height:
-                #     pick_and_place_num += 1
+            _eps_states.append(get_state(test_env,args))
+
+            # 一上来就完成
+            if dones and eps_i <= 1:
                 break
-        contact_nums.append(_contact_nums)
-    # 生成视频
-    for _ in range(10):
-        generate_video(args)
+
+            elif dones:
+                if infos[0]['is_success']:
+                    success_count += 1
+                    _eps_states.append('success')
+                else:
+                    _eps_states.append('fail')
+                all_count += 1
+                break
+        
+        
+        result = states_to_result(_eps_states)
+        if result == 'pickandplace':
+            pick_and_place_count += 1
+        elif result == 'roll':
+            roll_count += 1
+        else:
+            push_count += 1
+
+        eps_states.append(_eps_states)
+    
+    # # 生成视频
+    # for _ in range(10):
+    #     generate_video(args)
     cur_time = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S-%f")
     csv_file_name = f'csv/train-{args.test_model_path.split("/")[-1]}-test-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}-{cur_time}.csv'
-    save_to_csv(contact_nums, csv_file_name)
-    print('acc_rate:',acc_num / 100)
-    print('pick_and_place_rate:', pick_and_place_num / 100)
+    save_to_csv(eps_states, csv_file_name)
+    print(args.__dict__)
+    print('success_rate:', success_count / all_count)
+    print('pick_and_place_rate:', pick_and_place_count / all_count)
+    print('roll_rate:', roll_count / all_count)
+    print('push_rate:',push_count / all_count)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

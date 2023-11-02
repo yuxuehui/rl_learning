@@ -11,59 +11,8 @@ from panda_gym.envs.tasks.pick_and_place import PickAndPlace
 from panda_gym.envs.tasks.push import Push
 
 
-class PushWrapper(Push):
-    def __init__(
-        self,
-        sim,
-        reward_type="sparse",
-        distance_threshold=0.05,
-        goal_xy_range=0.3,
-        obj_xy_range=0.3,
-        object_height=1.0,
-    ) -> None:
-        self.object_height = object_height
-        super().__init__(sim,reward_type,distance_threshold,goal_xy_range,obj_xy_range)
 
-    def _create_scene(self) -> None:
-        self.sim.create_plane(z_offset=-0.4)
-        self.sim.create_table(length=1.1, width=0.7, height=0.4, x_offset=-0.3)
-        object_size = np.ones(3) * self.object_size / 2
-        object_size[2] = object_size[2] * self.object_height
-        object_position = np.array([0.0, 0.0, object_size[2]])
-        self.sim.create_box(
-            body_name="object",
-            half_extents=object_size,
-            mass=1.0,
-            position=object_position,
-            rgba_color=np.array([0.1, 0.9, 0.1, 1.0]),
-        )
-        self.sim.create_box(
-            body_name="target",
-            half_extents=object_size,
-            mass=0.0,
-            ghost=True,
-            position=object_position,
-            rgba_color=np.array([0.1, 0.9, 0.1, 0.3]),
-        )
-
-    def _sample_goal(self) -> np.ndarray:
-        """Sample a goal."""
-        goal = np.array([0.0, 0.0, self.object_size / 2 * self.object_height])  # z offset for the cube center
-        noise = self.np_random.uniform(self.goal_range_low, self.goal_range_high)
-        if self.np_random.random() < 0.3:
-            noise[2] = 0.0
-        goal += noise
-        return goal
-
-    def _sample_object(self) -> np.ndarray:
-        """Randomize start position of object."""
-        object_position = np.array([0.0, 0.0, self.object_size / 2 * self.object_height])
-        noise = self.np_random.uniform(self.obj_range_low, self.obj_range_high)
-        object_position += noise
-        return object_position
-
-
-class PickAndPlaceWrapper(PickAndPlace):
+class PushWrapper(PickAndPlace):
     def __init__(
         self,
         sim: PyBullet,
@@ -72,7 +21,7 @@ class PickAndPlaceWrapper(PickAndPlace):
         goal_xy_range: float = 0.3,
         goal_z_range: float = 0.2,
         obj_xy_range: float = 0.3,
-        object_height: float=1.0,
+        object_height: float= 1.0,
     ) -> None:
         self.object_height = object_height
         super().__init__(sim,reward_type,distance_threshold,goal_xy_range,goal_z_range,obj_xy_range)
@@ -103,8 +52,60 @@ class PickAndPlaceWrapper(PickAndPlace):
         """Sample a goal."""
         goal = np.array([0.0, 0.0, self.object_size / 2 * self.object_height])  # z offset for the cube center
         noise = self.np_random.uniform(self.goal_range_low, self.goal_range_high)
-        if self.np_random.random() < 0.3:
-            noise[2] = 0.0
+        noise[2] = 0
+        goal += noise
+        return goal
+
+    def _sample_object(self) -> np.ndarray:
+        """Randomize start position of object."""
+        object_position = np.array([0.0, 0.0, self.object_size / 2 * self.object_height])
+        noise = self.np_random.uniform(self.obj_range_low, self.obj_range_high)
+        object_position += noise
+        return object_position
+
+
+
+class PickAndPlaceWrapper(PickAndPlace):
+    def __init__(
+        self,
+        sim: PyBullet,
+        reward_type: str = "sparse",
+        distance_threshold: float = 0.05,
+        goal_xy_range: float = 0.3,
+        goal_z_range: float = 0.2,
+        obj_xy_range: float = 0.3,
+        object_height: float= 1.0,
+    ) -> None:
+        self.object_height = object_height
+        super().__init__(sim,reward_type,distance_threshold,goal_xy_range,goal_z_range,obj_xy_range)
+
+    def _create_scene(self) -> None:
+        """Create the scene."""
+        self.sim.create_plane(z_offset=-0.4)
+        self.sim.create_table(length=1.1, width=0.7, height=0.4, x_offset=-0.3)
+        object_size = np.ones(3) * self.object_size / 2
+        object_size[2] = object_size[2] * self.object_height
+        object_position = np.array([0.0, 0.0, object_size[2]])
+        self.sim.create_box(
+            body_name="object",
+            half_extents=object_size,
+            mass=1.0,
+            position=object_position,
+            rgba_color=np.array([0.1, 0.9, 0.1, 1.0]),
+        )
+        self.sim.create_box(
+            body_name="target",
+            half_extents=object_size,
+            mass=0.0,
+            ghost=True,
+            position=np.array([0.0, 0.0, 0.05]),
+            rgba_color=np.array([0.1, 0.9, 0.1, 0.3]),
+        )
+    def _sample_goal(self) -> np.ndarray:
+        """Sample a goal."""
+        goal = np.array([0.0, 0.0, self.object_size / 2 * self.object_height])  # z offset for the cube center
+        noise = self.np_random.uniform(self.goal_range_low, self.goal_range_high)
+        noise[2] = 0.06
         goal += noise
         return goal
 
@@ -151,7 +152,7 @@ class PandaPushEnv(RobotTaskEnv):
         object_height: float = 1,
     ) -> None:
         sim = PyBullet(render_mode=render_mode, renderer=renderer)
-        robot = Panda(sim, block_gripper=True, base_position=np.array([-0.6, 0.0, 0.0]), control_type=control_type)
+        robot = Panda(sim, block_gripper=False, base_position=np.array([-0.6, 0.0, 0.0]), control_type=control_type)
         task = PushWrapper(sim, reward_type=reward_type,object_height=object_height)
         super().__init__(
             robot,
@@ -185,7 +186,7 @@ class PandaPickAndPlaceEnv(RobotTaskEnv):
         render_pitch (float, optional): Pitch of the camera. Defaults to -30.
         render_roll (int, optional): Rool of the camera. Defaults to 0.
     """
-
+    
     def __init__(
         self,
         render_mode: str = "rgb_array",

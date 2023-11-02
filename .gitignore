@@ -9,3 +9,5 @@ TQC-*
 
 __pycache__
 *.mp4
+
+*.csv

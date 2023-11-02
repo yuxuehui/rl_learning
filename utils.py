@@ -31,9 +31,9 @@ def init_env():
 
 def get_push_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1, reward_type = '',control_type=''):
     def _init():
-        env = gymnasium.make(f'PandaPickAndPlace{control_type}{reward_type}{object_height}-v3')
+        env = gymnasium.make(f'PandaPush{control_type}{reward_type}{object_height}-v3')
         
-        env.unwrapped.task.goal_range_high[-1] = 0
+        # env.unwrapped.task.goal_range_high[-1] = 0
         block_uid = env.unwrapped.sim._bodies_idx['object']
         env.unwrapped.sim.physics_client.changeDynamics(bodyUniqueId=block_uid, linkIndex=-1, mass=mass)
         # wrapped_env = gym.wrappers.RecordEpisodeStatistics(env, 50)  # Records episode-reward
@@ -91,3 +91,33 @@ def save_to_csv(data, out_file):
         for _data in data:
             writer.writerow(_data)
         
+
+def get_state(envs,args):
+    object = envs.envs[0].unwrapped.sim._bodies_idx['object']
+    table = envs.envs[0].unwrapped.sim._bodies_idx['table']
+    robot = envs.envs[0].unwrapped.sim._bodies_idx['panda']
+    contact_points = envs.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA=table, bodyB=object, linkIndexA=-1,linkIndexB = -1)
+    contact_points1 = envs.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA = robot,bodyB = object, linkIndexA = 9, linkIndexB = -1)
+    contact_points2 = envs.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA = robot,bodyB = object, linkIndexA = 10, linkIndexB = -1)
+    object_info = envs.envs[0].unwrapped.sim.physics_client.getBasePositionAndOrientation(bodyUniqueId=object)
+    fingers_width = envs.envs[0].unwrapped.robot.get_fingers_width()
+
+    at_high = object_info[0][2] > 0.021 * args.test_object_height
+    clamp_finger = fingers_width > 0.03 and fingers_width < 0.0405
+    zero_table_contact = len(contact_points) == 0
+    contact_with_two_fingers = (len(contact_points1) > 0 and len(contact_points2)) > 0
+    
+    if at_high and clamp_finger and zero_table_contact and contact_with_two_fingers:
+        return 'pickandplace'
+    elif at_high:
+        return 'roll'
+    else:
+        return 'push'
+
+def states_to_result(states):
+    if 'pickandplace' in states:
+        return 'pickandplace'
+    elif 'roll' in states:
+        return 'roll'
+    else:
+        return 'push'
