@@ -10,8 +10,6 @@ from panda_gym.pybullet import PyBullet
 from panda_gym.envs.tasks.pick_and_place import PickAndPlace
 from panda_gym.envs.tasks.push import Push
 
-
-
 class PushWrapper(PickAndPlace):
     def __init__(
         self,

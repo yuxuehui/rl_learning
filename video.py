@@ -14,6 +14,7 @@ class VideoRecorder(object):
         self.fps = fps
         self.frames = []
         self.enabled = True
+        self.make_path(root_dir)
 
     def record(self, env):
         if self.enabled:
@@ -27,3 +28,13 @@ class VideoRecorder(object):
     
     def disable(self):
         self.enabled = False
+    
+    def reset(self):
+        self.frames.clear()
+
+    def make_path(self, root_dir):
+        paths = root_dir.split('/')
+        for i in range(len(paths)):
+            cur_path = '/'.join(paths[:i+1])
+            if not os.path.exists(cur_path):
+                os.mkdir(cur_path)

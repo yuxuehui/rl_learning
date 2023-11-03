@@ -12,7 +12,7 @@ from stable_baselines3.common.vec_env import (
 from stable_baselines3.common.evaluation import evaluate_policy
 
 from model import SACEnvSwitchWrapper
-from utils import make_env,init_env,save_to_csv,get_state,states_to_result
+from utils import make_env,init_env,save_to_csv,get_state,states_to_result,states_to_string
 import argparse
 
 import numpy
@@ -115,6 +115,12 @@ def test_success_rate_and_done_type(args):
                     args.test_mass, args.test_gravity, args.test_object_height)
     test_env = DummyVecEnv([env])
     model = SACEnvSwitchWrapper.load(args.test_model_path,env=test_env)
+    cur_time = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S-%f")
+    recoder = None
+    if args.save_video:
+        train_name = f'train-{args.test_model_path.split("/")[-1]}'
+        test_name = f'test-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}'
+        recoder = VideoRecorder(f'./video/{train_name}/{test_name}')
 
     all_count = 0
     success_count = 0
@@ -123,14 +129,14 @@ def test_success_rate_and_done_type(args):
     push_count = 0
     
     eps_states = []
-    for i in range(100):
+    eps_set = set()
+    while len(eps_states) < 100:
         #test_env = RecordVideo(test_env, './video')
         observations = test_env.reset()
         states = None
         episode_starts = np.ones((test_env.num_envs,), dtype=bool)
         _eps_states = []
         for eps_i in range(50):
-            # test_env.render(mode='human')
             
             actions, states = model.predict(
                 observations,  # type: ignore[arg-type]
@@ -138,9 +144,10 @@ def test_success_rate_and_done_type(args):
                 episode_start=episode_starts,
                 deterministic=True,
             )
+            if recoder is not None: recoder.record(test_env)
             observations, rewards, dones, infos = test_env.step(actions)
-
-            _eps_states.append(get_state(test_env,args))
+            if not dones:
+                _eps_states.append(get_state(test_env,args))
 
             # 一上来就完成
             if dones and eps_i <= 1:
@@ -155,7 +162,11 @@ def test_success_rate_and_done_type(args):
                 all_count += 1
                 break
         
+        # 一上来就成功不纳入计算
+        if len(_eps_states)==0 or (_eps_states[-1] !='success' and _eps_states[-1] !='fail'):
+            continue
         
+        string = states_to_string(_eps_states)
         result = states_to_result(_eps_states)
         if result == 'pickandplace':
             pick_and_place_count += 1
@@ -164,19 +175,22 @@ def test_success_rate_and_done_type(args):
         else:
             push_count += 1
 
+        if recoder is not None and string not in eps_set:
+            eps_set.add(string)
+            recoder.save(f'{string}-{cur_time}.mp4')
         eps_states.append(_eps_states)
     
     # # 生成视频
     # for _ in range(10):
     #     generate_video(args)
-    cur_time = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S-%f")
+    
     csv_file_name = f'csv/train-{args.test_model_path.split("/")[-1]}-test-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}-{cur_time}.csv'
     save_to_csv(eps_states, csv_file_name)
     print(args.__dict__)
     print('success_rate:', success_count / all_count)
     print('pick_and_place_rate:', pick_and_place_count / all_count)
     print('roll_rate:', roll_count / all_count)
-    print('push_rate:',push_count / all_count)
+    print('push_rate:', push_count / all_count)
 
 
 if __name__ == "__main__":
@@ -194,6 +208,8 @@ if __name__ == "__main__":
     parser.add_argument('--test_model_path', default='SAC-mass1.0-friction20.0', type=str)
     parser.add_argument('--test_mode',action="store_true", default=False)
     parser.add_argument('--test_rate_mode',action="store_true", default=False)
+    parser.add_argument('--save_video',action="store_true", default=False)
+
     args = parser.parse_args()
     
     if not args.test_mode and not args.test_rate_mode:

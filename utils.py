@@ -103,16 +103,18 @@ def get_state(envs,args):
     fingers_width = envs.envs[0].unwrapped.robot.get_fingers_width()
 
     at_high = object_info[0][2] > 0.021 * args.test_object_height
-    clamp_finger = fingers_width > 0.03 and fingers_width < 0.0405
+    # clamp_finger = fingers_width > 0.03 and fingers_width < 0.0405
     zero_table_contact = len(contact_points) == 0
     contact_with_two_fingers = (len(contact_points1) > 0 and len(contact_points2)) > 0
     
-    if at_high and clamp_finger and zero_table_contact and contact_with_two_fingers:
+    if at_high and zero_table_contact and contact_with_two_fingers:
         return 'pickandplace'
     elif at_high:
         return 'roll'
-    else:
+    elif object_info[0][2] > 0.019 and object_info[0][2]<0.21:
         return 'push'
+    else:
+        return 'down'
 
 def states_to_result(states):
     if 'pickandplace' in states:
@@ -121,3 +123,17 @@ def states_to_result(states):
         return 'roll'
     else:
         return 'push'
+
+
+
+def states_to_string(states):
+    tran_dict = {
+        'roll':'r',
+        'pickandplace':'P',
+        'push':'p',
+        'down':'d',
+        'success':'s',
+        'fail':'f',
+    }
+    _states = [tran_dict[s] for s in states]
+    return ''.join(_states)
