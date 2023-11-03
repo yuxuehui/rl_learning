@@ -58,29 +58,33 @@ def merge_csv(csv_path,out_path):
         writer = csv.writer(f)
         head = ['algorithm','train_domain','train_mass','train_friction','train_gravity','train_object_height',
                  'test_domain','test_mass','test_friction','test_gravity','test_object_height',
-                 'push_rate','roll_rate','pickandplace_rate']
+                 'push_rate','roll_rate','pickandplace_rate','success_rate']
         experiment_result = {}
 
         for csv_file in csv_files:
 
             # 统计完成每个任务的比率
-            count = {'push':0,'roll':0,'pickandplace':0}
+            count = {'push':0,'roll':0,'pickandplace':0,'success':0}
             with open(csv_file,'r',encoding='utf-8') as f:
                 reader = csv.reader(f)
                 for states in reader:
                     result = states_to_result(states)
                     count[result] += 1
+                    if states[-1] == 'success': count['success'] += 1
+
+
             all_num = count['push'] + count['roll'] + count['pickandplace']
             push_rate = count['push'] / all_num
             roll_rate = count['roll'] / all_num
             pickandplace_rate = count['pickandplace'] / all_num
+            success_rate = count['success'] / all_num
 
             # 记录实验结果
             experiment_name = csv_file.split('/')[-1].replace('.csv','')
             experiment_state = re_match(experiment_name)
             experiment_code = _encode(experiment_state)
             if experiment_code not in experiment_result or experiment_result[experiment_code][0]['date'] < experiment_state['date']:
-                experiment_result[experiment_code] = [experiment_state,push_rate,roll_rate,pickandplace_rate]
+                experiment_result[experiment_code] = [experiment_state,push_rate,roll_rate,pickandplace_rate,success_rate]
             
         data = []
         for item in experiment_result.values():
