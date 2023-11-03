@@ -1,16 +1,16 @@
 
-# # 计算 mass 的指标
-# echo "mass 1"
-# python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+# 计算 mass 的指标
+echo "mass 1"
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 
-# echo "mass 2"
-# python panda_sac.py --domain_name PandaPush-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+echo "mass 2"
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 
-# echo "mass 5"
-# python panda_sac.py --domain_name PandaPush-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+echo "mass 5"
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 
-# echo "mass 10"
-# python panda_sac.py --domain_name PandaPush-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
+echo "mass 10"
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0 --test_rate_mode
 
 # 计算 mass 的指标
 echo "mass 1"

@@ -5,7 +5,6 @@ import re
 from datetime import datetime
 import copy
 
-
 from utils import states_to_result
 
 def re_match(csv_name):
@@ -72,7 +71,6 @@ def merge_csv(csv_path,out_path):
                     count[result] += 1
                     if states[-1] == 'success': count['success'] += 1
 
-
             all_num = count['push'] + count['roll'] + count['pickandplace']
             push_rate = count['push'] / all_num
             roll_rate = count['roll'] / all_num
@@ -85,7 +83,7 @@ def merge_csv(csv_path,out_path):
             experiment_code = _encode(experiment_state)
             if experiment_code not in experiment_result or experiment_result[experiment_code][0]['date'] < experiment_state['date']:
                 experiment_result[experiment_code] = [experiment_state,push_rate,roll_rate,pickandplace_rate,success_rate]
-            
+
         data = []
         for item in experiment_result.values():
             _data = []

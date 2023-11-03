@@ -17,7 +17,7 @@ class PushWrapper(PickAndPlace):
         reward_type: str = "sparse",
         distance_threshold: float = 0.05,
         goal_xy_range: float = 0.3,
-        goal_z_range: float = 0.2,
+        goal_z_range: float = 0.0,
         obj_xy_range: float = 0.3,
         object_height: float= 1.0,
     ) -> None:
@@ -50,7 +50,6 @@ class PushWrapper(PickAndPlace):
         """Sample a goal."""
         goal = np.array([0.0, 0.0, self.object_size / 2 * self.object_height])  # z offset for the cube center
         noise = self.np_random.uniform(self.goal_range_low, self.goal_range_high)
-        noise[2] = 0
         goal += noise
         return goal
 
@@ -103,7 +102,7 @@ class PickAndPlaceWrapper(PickAndPlace):
         """Sample a goal."""
         goal = np.array([0.0, 0.0, self.object_size / 2 * self.object_height])  # z offset for the cube center
         noise = self.np_random.uniform(self.goal_range_low, self.goal_range_high)
-        noise[2] = 0.06
+        noise[2] += 0.05
         goal += noise
         return goal
 

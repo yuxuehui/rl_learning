@@ -61,7 +61,7 @@ def test(args):
     env3 = make_env(args.domain_name, 1.0, 0.001,3.0)
     env4 = make_env(args.domain_name, 1.0, 0.001,4.0)
     # env for test
-    env5 = make_env(args.domain_name, 1.0, 0.001,10)
+    env5 = make_env(args.domain_name, 1.0, 0.001,10 )
 
     train_env = DummyVecEnv([env1,env2,env3,env4])
     test_env = DummyVecEnv([env5,env5,env5,env5])

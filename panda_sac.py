@@ -133,6 +133,7 @@ def test_success_rate_and_done_type(args):
     while len(eps_states) < 100:
         #test_env = RecordVideo(test_env, './video')
         observations = test_env.reset()
+        recoder.reset()
         states = None
         episode_starts = np.ones((test_env.num_envs,), dtype=bool)
         _eps_states = []
