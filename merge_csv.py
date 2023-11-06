@@ -20,7 +20,7 @@ def re_match(csv_name):
     test_friction: r'test.*?friction(.*?)-'
     test_gravity: r'test.*?gravity(.*?)-'
     test_object_height: r'test.*?object_height(.*?)-'
-    date: r'(\d\d\d\d-\d\d-\d\d-\d\d:\d\d:\d\d-\d\d\d\d\d\d)'
+    date: r'test.*?(\d\d\d\d-\d\d-\d\d-\d\d:\d\d:\d\d-\d\d\d\d\d\d)'
 
     """
     def _extract(pattern, string, default = ''):
@@ -39,7 +39,7 @@ def re_match(csv_name):
     test_friction = float(_extract(r'test.*?friction(.*?)-',csv_name,'1.0'))
     test_gravity = float(_extract(r'test.*?gravity(.*?)-',csv_name,'9.81'))
     test_object_height = float(_extract(r'test.*?object_height(.*?)-',csv_name,'1.0'))
-    date = datetime.strptime(_extract(r'(\d\d\d\d-\d\d-\d\d-\d\d:\d\d:\d\d-\d\d\d\d\d\d)',csv_name,'2023-10-01-00:00:00-000000'),"%Y-%m-%d-%H:%M:%S-%f").date()
+    date = datetime.strptime(_extract(r'test.*?(\d\d\d\d-\d\d-\d\d-\d\d:\d\d:\d\d-\d\d\d\d\d\d)',csv_name,'2023-10-01-00:00:00-000000'),"%Y-%m-%d-%H:%M:%S-%f").date()
     return locals()
 
 def merge_csv(csv_path,out_path):

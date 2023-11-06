@@ -29,10 +29,12 @@ def init_env():
                     ENV_IDS.append(env_id)
 
 
-def get_push_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1, reward_type = '',control_type=''):
+def get_push_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1, reward_type = '',control_type='',train_time_steps=0):
     def _init():
         env = gymnasium.make(f'PandaPush{control_type}{reward_type}{object_height}-v3')
         
+        env.task.set_total_train_timesteps(train_time_steps)
+
         # env.unwrapped.task.goal_range_high[-1] = 0
         block_uid = env.unwrapped.sim._bodies_idx['object']
         env.unwrapped.sim.physics_client.changeDynamics(bodyUniqueId=block_uid, linkIndex=-1, mass=mass)
@@ -52,10 +54,10 @@ def get_push_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-
     return _init
 
 
-def get_pick_and_place_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1, reward_type = '',control_type=''):
+def get_pick_and_place_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1, reward_type = '',control_type='',train_time_steps=0):
     def _init():
         env = gymnasium.make(f'PandaPickAndPlace{control_type}{reward_type}{object_height}-v3')
-
+        env.task.set_total_train_timesteps(train_time_steps)
         block_uid = env.unwrapped.sim._bodies_idx['object']
         env.unwrapped.sim.physics_client.changeDynamics(bodyUniqueId=block_uid, linkIndex=-1, mass=mass)
         # change table's friction
@@ -72,13 +74,13 @@ def get_pick_and_place_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0
         return env
     return _init
 
-def make_env(name,lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1.0, reward_type = '',control_type=''):
+def make_env(name,lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1.0, reward_type = '',control_type='',train_time_steps=0):
     if name == "PandaPush-v3":
         print("This is PandaPush-v3 Env, Welcome!")
-        return get_push_env(lateral_friction, spinning_friction, mass, gravity,object_height,reward_type,control_type )
+        return get_push_env(lateral_friction, spinning_friction, mass, gravity,object_height,reward_type,control_type,train_time_steps)
     elif name == "PandaPickAndPlace-v3":
         print("This is PandaPickAndPlace-v3 Env, Welcome!")
-        return get_pick_and_place_env(lateral_friction, spinning_friction, mass, gravity,object_height,reward_type,control_type )
+        return get_pick_and_place_env(lateral_friction, spinning_friction, mass, gravity,object_height,reward_type,control_type,train_time_steps)
     else:
         raise Exception("Unkown Environment in make_env")
 

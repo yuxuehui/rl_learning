@@ -27,11 +27,12 @@ import csv
 
 def train(args):
     env_id = args.domain_name
+    cur_time = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S-%f")
     # log_dir = './panda_push_v3_tensorboard/'
     log_dir = './' + args.domain_name + '_tensorboard/'
     
     env = make_env(env_id, args.test_lateral_friction, args.test_spinning_friction,
-                    args.test_mass, args.test_gravity, args.test_object_height)
+                    args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4)
     train_env = DummyVecEnv([env,env,env,env])
     
     # SAC train model
@@ -58,7 +59,7 @@ def train(args):
 
     model.learn(total_timesteps=args.time_step,progress_bar=True,
                 tb_log_name=f"SAC-mass{args.test_mass}-friction{args.test_lateral_friction}-{args.test_gravity}-{args.test_object_height}")
-    model.save(f'checkpoints/SAC-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}')
+    model.save(f'checkpoints/SAC-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}-{cur_time}')
     
     train_env.close()
 
@@ -133,7 +134,7 @@ def test_success_rate_and_done_type(args):
     while len(eps_states) < 100:
         #test_env = RecordVideo(test_env, './video')
         observations = test_env.reset()
-        recoder.reset()
+        if recoder is not None: recoder.reset()
         states = None
         episode_starts = np.ones((test_env.num_envs,), dtype=bool)
         _eps_states = []

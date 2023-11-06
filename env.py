@@ -1,5 +1,5 @@
 
-from typing import Optional
+from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 
@@ -22,6 +22,8 @@ class PushWrapper(PickAndPlace):
         object_height: float= 1.0,
     ) -> None:
         self.object_height = object_height
+        self.total_train_timesteps = 0
+        self.cur_train_steps = 0
         super().__init__(sim,reward_type,distance_threshold,goal_xy_range,goal_z_range,obj_xy_range)
 
     def _create_scene(self) -> None:
@@ -59,6 +61,10 @@ class PushWrapper(PickAndPlace):
         noise = self.np_random.uniform(self.obj_range_low, self.obj_range_high)
         object_position += noise
         return object_position
+
+    def set_total_train_timesteps(self,total_train_timesteps):
+        self.total_train_timesteps = total_train_timesteps
+
 
 
 
@@ -69,11 +75,13 @@ class PickAndPlaceWrapper(PickAndPlace):
         reward_type: str = "sparse",
         distance_threshold: float = 0.05,
         goal_xy_range: float = 0.3,
-        goal_z_range: float = 0.2,
+        goal_z_range: float = 0.05,
         obj_xy_range: float = 0.3,
         object_height: float= 1.0,
     ) -> None:
         self.object_height = object_height
+        self.total_train_timesteps = 0
+        self.cur_train_steps = 0
         super().__init__(sim,reward_type,distance_threshold,goal_xy_range,goal_z_range,obj_xy_range)
 
     def _create_scene(self) -> None:
@@ -98,11 +106,21 @@ class PickAndPlaceWrapper(PickAndPlace):
             position=np.array([0.0, 0.0, 0.05]),
             rgba_color=np.array([0.1, 0.9, 0.1, 0.3]),
         )
+    
     def _sample_goal(self) -> np.ndarray:
         """Sample a goal."""
         goal = np.array([0.0, 0.0, self.object_size / 2 * self.object_height])  # z offset for the cube center
         noise = self.np_random.uniform(self.goal_range_low, self.goal_range_high)
         noise[2] += 0.05
+        # if self.total_train_timesteps == 0 or self.cur_train_steps >= self.total_train_timesteps: # test_mode
+        #     noise[2] += 0.05
+        # elif self.cur_train_steps >= self.total_train_timesteps // 2:
+        #     noise[2] *= self.cur_train_steps / self.total_train_timesteps
+        #     noise[2] += 0.05 * (min(self.cur_train_steps,self.total_train_timesteps) - self.total_train_timesteps // 2) / self.total_train_timesteps * 2
+        # else:
+        #     noise[2] *= self.cur_train_steps / self.total_train_timesteps
+        #     noise[2] += 0
+
         goal += noise
         return goal
 
@@ -112,6 +130,9 @@ class PickAndPlaceWrapper(PickAndPlace):
         noise = self.np_random.uniform(self.obj_range_low, self.obj_range_high)
         object_position += noise
         return object_position
+
+    def set_total_train_timesteps(self,total_train_timesteps):
+        self.total_train_timesteps = total_train_timesteps
 
 class PandaPushEnv(RobotTaskEnv):
     """Push task wih Panda robot.
@@ -163,7 +184,10 @@ class PandaPushEnv(RobotTaskEnv):
             render_roll=render_roll,
         )
 
-
+    def step(self, action):
+        self.task.cur_train_steps += 1
+        return super().step(action)
+    
 class PandaPickAndPlaceEnv(RobotTaskEnv):
     """Pick and Place task wih Panda robot.
 
@@ -213,3 +237,8 @@ class PandaPickAndPlaceEnv(RobotTaskEnv):
             render_pitch=render_pitch,
             render_roll=render_roll,
         )
+
+    def step(self, action):
+        self.task.cur_train_steps += 1
+        return super().step(action)
+    
