@@ -44,6 +44,7 @@ def get_push_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-
         env.unwrapped.sim.set_spinning_friction('table', -1, spinning_friction=spinning_friction)
         # gravity
         env.unwrapped.sim.physics_client.setGravity(0, 0, gravity)
+        env.set_obs_friction_mass(lateral_friction,mass)
 
         block_uid = env.unwrapped.sim._bodies_idx['object']
         print("Info of objects", env.unwrapped.sim.physics_client.getDynamicsInfo(bodyUniqueId=block_uid, linkIndex=-1))
@@ -65,6 +66,7 @@ def get_pick_and_place_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0
         env.unwrapped.sim.set_spinning_friction('table', -1, spinning_friction=spinning_friction)
         # gravity
         env.unwrapped.sim.physics_client.setGravity(0, 0, gravity)
+        env.set_obs_friction_mass(lateral_friction,mass)
 
         block_uid = env.unwrapped.sim._bodies_idx['object']
         print("Info of objects", env.unwrapped.sim.physics_client.getDynamicsInfo(bodyUniqueId=block_uid, linkIndex=-1))
@@ -119,14 +121,13 @@ def get_state(envs,args):
         return 'down'
 
 def states_to_result(states):
-    if 'pickandplace' in states:
-        return 'pickandplace'
-    elif 'roll' in states:
-        return 'roll'
-    else:
-        return 'push'
-
-
+    for state in states:
+        if 'pickandplace' in state:
+            return 'pickandplace'
+    for state in states:
+        if 'roll' in state:
+            return 'roll'
+    return 'push'
 
 def states_to_string(states):
     tran_dict = {
@@ -137,5 +138,5 @@ def states_to_string(states):
         'success':'s',
         'fail':'f',
     }
-    _states = [tran_dict[s] for s in states]
+    _states = [tran_dict[s.split('_')[0]] for s in states]
     return ''.join(_states)

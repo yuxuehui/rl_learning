@@ -10,6 +10,8 @@ from panda_gym.pybullet import PyBullet
 from panda_gym.envs.tasks.pick_and_place import PickAndPlace
 from panda_gym.envs.tasks.push import Push
 
+import gymnasium
+
 class PushWrapper(PickAndPlace):
     def __init__(
         self,
@@ -75,7 +77,7 @@ class PickAndPlaceWrapper(PickAndPlace):
         reward_type: str = "sparse",
         distance_threshold: float = 0.05,
         goal_xy_range: float = 0.3,
-        goal_z_range: float = 0.05,
+        goal_z_range: float = 0.11,
         obj_xy_range: float = 0.3,
         object_height: float= 1.0,
     ) -> None:
@@ -172,6 +174,8 @@ class PandaPushEnv(RobotTaskEnv):
         sim = PyBullet(render_mode=render_mode, renderer=renderer)
         robot = Panda(sim, block_gripper=False, base_position=np.array([-0.6, 0.0, 0.0]), control_type=control_type)
         task = PushWrapper(sim, reward_type=reward_type,object_height=object_height)
+        self.friction = 1.0
+        self.mass = 1.0
         super().__init__(
             robot,
             task,
@@ -183,11 +187,25 @@ class PandaPushEnv(RobotTaskEnv):
             render_pitch=render_pitch,
             render_roll=render_roll,
         )
+        self.observation_space['friction'] = gymnasium.spaces.Box(-10,10,(1,),dtype=np.float32)
+        self.observation_space['mass'] = gymnasium.spaces.Box(-10,10,(1,),dtype=np.float32)
+
 
     def step(self, action):
         self.task.cur_train_steps += 1
         return super().step(action)
-    
+
+
+    def set_obs_friction_mass(self,friction,mass):
+        self.friction = friction
+        self.mass = mass
+
+    def _get_obs(self) -> Dict[str, np.ndarray]:
+        obs = super()._get_obs()
+        obs['friction'] = np.log(self.friction)
+        obs['mass'] = np.log(self.mass)
+        return obs
+
 class PandaPickAndPlaceEnv(RobotTaskEnv):
     """Pick and Place task wih Panda robot.
 
@@ -226,6 +244,8 @@ class PandaPickAndPlaceEnv(RobotTaskEnv):
         sim = PyBullet(render_mode=render_mode, renderer=renderer)
         robot = Panda(sim, block_gripper=False, base_position=np.array([-0.6, 0.0, 0.0]), control_type=control_type)
         task = PickAndPlaceWrapper(sim, reward_type=reward_type,object_height=object_height)
+        self.friction = 1.0
+        self.mass = 1.0
         super().__init__(
             robot,
             task,
@@ -237,8 +257,19 @@ class PandaPickAndPlaceEnv(RobotTaskEnv):
             render_pitch=render_pitch,
             render_roll=render_roll,
         )
+        self.observation_space['friction'] = gymnasium.spaces.Box(-10,10,(1,),dtype=np.float32)
+        self.observation_space['mass'] = gymnasium.spaces.Box(-10,10,(1,),dtype=np.float32)
 
     def step(self, action):
         self.task.cur_train_steps += 1
         return super().step(action)
     
+    def set_obs_friction_mass(self,friction,mass):
+        self.friction = friction
+        self.mass = mass
+
+    def _get_obs(self) -> Dict[str, np.ndarray]:
+        obs = super()._get_obs()
+        obs['friction'] = np.log(self.friction)
+        obs['mass'] = np.log(self.mass)
+        return obs

@@ -4,62 +4,62 @@
 
 # 计算 mass 的指标
 echo "mass 1"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-939001 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-702338 --test_rate_mode
 
 echo "mass 2"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-932367 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-742244 --test_rate_mode
 
 echo "mass 5"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-935894 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-597162 --test_rate_mode
 
 echo "mass 10"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:43-097265 --test_rate_mode
+python panda_sac.py --domain_name PandaPush-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-701661 --test_rate_mode
 
 # 计算 mass 的指标
 echo "mass 1"
-python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-939001 --test_rate_mode
+python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-702338 --test_rate_mode
 
 echo "mass 2"
-python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-932367 --test_rate_mode
+python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-742244 --test_rate_mode
 
 echo "mass 5"
-python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-935894 --test_rate_mode
+python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-597162 --test_rate_mode
 
 echo "mass 10"
-python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:43-097265 --test_rate_mode
+python panda_sac.py --domain_name PandaPickAndPlace-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-701661 --test_rate_mode
 
 
-# 计算其他对比指标
-echo "mass 1 - 2"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-939001 --test_rate_mode
-echo "mass 1 - 5"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-939001 --test_rate_mode
-echo "mass 1 - 10"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-939001 --test_rate_mode
+# # 计算其他对比指标
+# echo "mass 1 - 2"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-702338 --test_rate_mode
+# echo "mass 1 - 5"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-702338 --test_rate_mode
+# echo "mass 1 - 10"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass1-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-702338 --test_rate_mode
 
-# 计算其他对比指标
-echo "mass 2 - 1"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-932367 --test_rate_mode
-echo "mass 2 - 5"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-932367 --test_rate_mode
-echo "mass 2 - 10"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-932367 --test_rate_mode
+# # 计算其他对比指标
+# echo "mass 2 - 1"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-742244 --test_rate_mode
+# echo "mass 2 - 5"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-742244 --test_rate_mode
+# echo "mass 2 - 10"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass2-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-742244 --test_rate_mode
 
-# 计算其他对比指标
-echo "mass 5 - 1"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-935894 --test_rate_mode
-echo "mass 5 - 2"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-935894 --test_rate_mode
-echo "mass 5 - 10"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:42-935894 --test_rate_mode
+# # 计算其他对比指标
+# echo "mass 5 - 1"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-597162 --test_rate_mode
+# echo "mass 5 - 2"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-597162 --test_rate_mode
+# echo "mass 5 - 10"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 10 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass5-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-597162 --test_rate_mode
 
-# 计算其他对比指标
-echo "mass 10 - 1"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:43-097265 --test_rate_mode
-echo "mass 10 - 2"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:43-097265 --test_rate_mode
-echo "mass 10 - 5"
-python panda_sac.py --domain_name PandaPush-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0-2023-11-05-23:42:43-097265 --test_rate_mode
+# # 计算其他对比指标
+# echo "mass 10 - 1"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 1 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-701661 --test_rate_mode
+# echo "mass 10 - 2"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 2 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-701661 --test_rate_mode
+# echo "mass 10 - 5"
+# python panda_sac.py --domain_name PandaPush-v3 --test_mass 5 --test_model_path checkpoints/SAC-PandaPickAndPlace-v3-mass10-friction1.0-gravity9.81-object_height1.0-2023-11-15-02:13:47-701661 --test_rate_mode
 
 
 

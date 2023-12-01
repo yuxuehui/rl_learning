@@ -9,6 +9,7 @@ from stable_baselines3.common.vec_env import (
     DummyVecEnv,
     unwrap_vec_normalize,
 )
+from stable_baselines3.common.buffers import DictReplayBuffer
 from stable_baselines3.common.evaluation import evaluate_policy
 
 from model import SACEnvSwitchWrapper
@@ -31,10 +32,31 @@ def train(args):
     # log_dir = './panda_push_v3_tensorboard/'
     log_dir = './' + args.domain_name + '_tensorboard/'
     
-    env = make_env(env_id, args.test_lateral_friction, args.test_spinning_friction,
-                    args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4)
-    train_env = DummyVecEnv([env,env,env,env])
+    env_1 = make_env(env_id, args.test_lateral_friction, args.test_spinning_friction,
+                    args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4,reward_type='Dense')
+    # env_2 = make_env(env_id, args.test_lateral_friction, args.test_spinning_friction,
+    #                 args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4,reward_type='Dense')
+    # env_3 = make_env(env_id, args.test_lateral_friction, args.test_spinning_friction,
+    #                 args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4,reward_type='Dense')
+    # env_4 = make_env(env_id, args.test_lateral_friction, args.test_spinning_friction,
+    #                 args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4,reward_type='Dense')
+    # env_5 = make_env(env_id, args.test_lateral_friction, args.test_spinning_friction,
+    #                 args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4,reward_type='Dense')
+    # env_1 = make_env(env_id, 1, args.test_spinning_friction,
+    #                 args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4,reward_type='Dense')
+    # env_2 = make_env(env_id, 2, args.test_spinning_friction,
+    #                 args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4,reward_type='Dense')
+    # env_3 = make_env(env_id, 3, args.test_spinning_friction,
+    #                 args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4,reward_type='Dense')
+    # env_4 = make_env(env_id, 4.0, args.test_spinning_friction,
+    #                 args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4,reward_type='Dense')
+    # env_5 = make_env(env_id, 10, args.test_spinning_friction,
+    #                 args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4,reward_type='Dense')
+    train_env = DummyVecEnv([env_1,env_1,env_1,env_1])
     
+    # env = make_env(env_id, 1, args.test_spinning_friction,
+    #                 args.test_mass, args.test_gravity, args.test_object_height,train_time_steps=args.time_step//4,reward_type='Dense')
+
     # SAC train model
     model = SACEnvSwitchWrapper(policy = "MultiInputPolicy",
                             env = train_env,
@@ -44,11 +66,11 @@ def train(args):
                             train_freq=64,
                             gradient_steps=64,
                             tau=0.05,
-                            replay_buffer_class=HerReplayBuffer,
-                            replay_buffer_kwargs=dict(
-                                n_sampled_goal=4,
-                                goal_selection_strategy="future",
-                            ),
+                            replay_buffer_class=DictReplayBuffer,
+                            # replay_buffer_kwargs=dict(
+                            #     n_sampled_goal=4,
+                            #     goal_selection_strategy="future",
+                            # ),
                             policy_kwargs=dict(
                                 net_arch=[512, 512, 512],
                                 n_critics=2,
@@ -97,13 +119,14 @@ def generate_video(args):
         contact_points2 = test_env.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA = robot,bodyB = object, linkIndexA = 10, linkIndexB = -1)
 
         contact_points = test_env.envs[0].unwrapped.sim.physics_client.getContactPoints(bodyA=table, bodyB=object, linkIndexA=-1,linkIndexB = -1)
-        print("object position: ", test_env.envs[0].unwrapped.sim.physics_client.getBasePositionAndOrientation(bodyUniqueId=object)[0])
-        print('contact num between table and object: ',len(contact_points))
-        print('contact distance between table and object: ',test_env.envs[0].unwrapped.robot.get_fingers_width())
-        print('contact num between table and fingers: ', int(len(contact_points1) > 0) + int(len(contact_points2) > 0))
-        # print(contact_points1)
-        # print(contact_points2)
-        print(infos)
+        # print("object position: ", test_env.envs[0].unwrapped.sim.physics_client.getBasePositionAndOrientation(bodyUniqueId=object)[0])
+        # print('contact num between table and object: ',len(contact_points))
+        # print('contact distance between table and object: ',test_env.envs[0].unwrapped.robot.get_fingers_width())
+        # print('contact num between table and fingers: ', int(len(contact_points1) > 0) + int(len(contact_points2) > 0))
+        # # print(contact_points1)
+        # # print(contact_points2)
+        # print(infos)
+        print(get_state(test_env,args))
         if dones:
             break
     
@@ -149,10 +172,10 @@ def test_success_rate_and_done_type(args):
             if recoder is not None: recoder.record(test_env)
             observations, rewards, dones, infos = test_env.step(actions)
             if not dones:
-                _eps_states.append(get_state(test_env,args))
+                _eps_states.append(get_state(test_env,args) + f"_{actions[0][-1]:.2f}")
 
             # 一上来就完成
-            if dones and eps_i <= 1:
+            if dones and eps_i <= 5:
                 break
 
             elif dones:
@@ -185,7 +208,7 @@ def test_success_rate_and_done_type(args):
     # # 生成视频
     # for _ in range(10):
     #     generate_video(args)
-    
+
     csv_file_name = f'csv/train-{args.test_model_path.split("/")[-1]}-test-{args.domain_name}-mass{args.test_mass}-friction{args.test_lateral_friction}-gravity{-args.test_gravity}-object_height{args.test_object_height}-{cur_time}.csv'
     save_to_csv(eps_states, csv_file_name)
     print(args.__dict__)
@@ -197,10 +220,10 @@ def test_success_rate_and_done_type(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--domain_name', default='PandaPickAndPlace-v3')
+    parser.add_argument('--domain_name', default='PandaPush-v3')
     parser.add_argument('--random_int', default=[1, 5], nargs='+', type=int)
     parser.add_argument('--random_float', default=[0.001, 0.01], nargs='+', type=float)
-    parser.add_argument('--test_mass', default=1.0, type=int)
+    parser.add_argument('--test_mass', default=1.0, type=float)
     parser.add_argument('--time_step', default=2000000, type=int)
     parser.add_argument('--test_spinning_friction', default=0.001, type=float)
     parser.add_argument('--test_lateral_friction', default=1.0, type=float)
