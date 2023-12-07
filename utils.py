@@ -29,8 +29,9 @@ def init_env():
                     ENV_IDS.append(env_id)
 
 
-def get_push_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1, reward_type = '',control_type='',train_time_steps=0):
+def get_push_env(lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1.0, reward_type = '',control_type='',train_time_steps=0):
     def _init():
+        # print("********", control_type, "**", reward_type, "**", object_height)
         env = gymnasium.make(f'PandaPush{control_type}{reward_type}{object_height}-v3')
         
         env.task.set_total_train_timesteps(train_time_steps)
@@ -86,6 +87,24 @@ def make_env(name,lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=
     else:
         raise Exception("Unkown Environment in make_env")
 
+
+# def make_skill_env(name,lateral_friction=1.0,spinning_friction=0.001,mass=1.0,gravity=-9.81, object_height=1.0, reward_type = '',control_type='',train_time_steps=0):
+#     from envs.skill_choose import TestEnv
+#     env = TestEnv(
+#             info_phase_length=10,
+#             env_id = env_id, 
+#             args.test_lateral_friction, 
+#             args.test_spinning_friction,
+#             args.test_mass, 
+#             args.test_gravity, 
+#             args.test_object_height,
+#             train_time_steps=args.time_step//4,
+#             reward_type='Dense'
+#         )
+#     max_ep_len = 10
+#     env_targets = [10] # 需要再看看，最大的return大约是多少
+#     scale = 1
+#     return env
 
 def save_to_csv(data, out_file):
 
